@@ -1,21 +1,20 @@
-const args = process.argv.slice(2);
 const rq = require("request");
 
-const breedDescription = (breed) => {
+const fetchBreedDescription = function(breed, callback) {
   rq("https://api.thecatapi.com/v1/breeds/search?q=" + breed, (error, response, body) => {
     if (error) {
-      console.log("ERROR: ", error);
+      callback(`ERROR", ${error}`, body);
     }
 
     const data = JSON.parse(body);
     const breed = data[0];
+
     if (breed) {
-      console.log('description:', breed.description); 
+      callback(error, `description: ${breed.description}`);
     } else {
-      console.log("REQUEST FAILED: breed not found");
+      callback("REQUEST FAILED: breed not found", body);
     }
   });
 };
-//TOD0: add mocha tests
-breedDescription(args[0]);
 
+module.exports = { fetchBreedDescription };
